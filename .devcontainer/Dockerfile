@@ -31,7 +31,7 @@ RUN ARCH=$(uname -m) && \
 RUN sudo dpkg -i session-manager-plugin.deb
 
 # flexmonster-cliインストール
-RUN sudo npm install -g flexmonster-cli
+# RUN sudo npm install -g flexmonster-cli
 
 
 # # 環境変数設定
