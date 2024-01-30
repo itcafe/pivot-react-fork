@@ -1,46 +1,135 @@
-# Flexmonster Pivot Table & Charts integration with Next.js + TypeScript
-[![Flexmonster Pivot Table & Charts](https://cdn.flexmonster.com/landing.png)](http://flexmonster.com/?r=rm_react)
-Website: [www.flexmonster.com](https://www.flexmonster.com/?r=rm_react)
+### Flexmonster を導入して Next.js + TypeScript で Pivot Table & Charts を使用する
 
-## Flexmonster Pivot Table & Charts
+## Introduction
 
-Flexmonster Pivot is a powerful JavaScript tool for interactive web reporting. It allows you to visualize and analyze data from JSON, CSV, SQL, NoSQL, Elasticsearch, and OLAP data sources quickly and conveniently. Flexmonster is designed to integrate seamlessly with any client-side framework and can be easily embedded into your application.
+公式サンプルのサイドメニューへ 1 メニュー追加し、追加ページにて Pivot Table と Chart の基本的な定義情報をまとめています
+以下今回の対象の説明
 
-This repository contains a sample [Next.js](https://nextjs.org/) TypeScript project for Flexmonster Pivot Table & Charts.
+nextjs-ts/src/UIElements/source/testdata_full_out.json
+サンプルデータ
+今回のサンプルでは API ではなくローカルの json を利用する想定でサンプルデータを追加
 
-Table of contents:
+nextjs-ts/src/UIElements/SideMenu.tsx
+サイドメニュー
 
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Related Flexmonster docs](#related-flexmonster-docs)
+nextjs-ts/src/app/pivot-table-demo-test/page.tsx
+追加ページ
 
-## Prerequisites
+## 定義情報のまとめ
 
-- [Node.js 16 or later](https://nodejs.org/en/)
+以下の項目について定義の概要のまとめ
 
-## Installation
-
-1. Download a `.zip` archive with the sample project or clone it from GitHub with the following command:
-
-```bash
-git clone https://github.com/flexmonster/pivot-react.git && cd pivot-react/nextjs-ts
+```javascript
+import { Report, Slice, DataSource, Options, Format } from "flexmonster";
 ```
 
-2. Install the npm dependencies described in `package.json`:
+# Report
 
-```bash
-npm install
+Pivot Table で呼び出すレポートの基礎情報を定義
+
+```javascript
+const reportTest: Report = {
+  dataSource: reportTestDatasource,
+  slice: reportTestSlice,
+  options: reportTestOptions,
+  formats: [reportTestFormat],
+};
 ```
 
-3. Run the sample project:
+# DataSource
 
-```bash
-npm start
+データソースを定義
+
+type：データソースのデータ型（API の場合は指定しない）
+data：データソース
+（filename：API の場合はこちらを使用）
+mapping：データソースの項目の定義と型を記載
+
+```javascript
+const reportTestDatasource: DataSource = {
+  type: "json",
+  data: getData(),
+  mapping: {
+    customer_id: {
+      type: "string",
+    },
+    device_id: {
+      type: "string",
+    },
+    //
+  },
+};
 ```
 
-To see the result, open `http://localhost:3000/` in your browser.
+# Slice
 
-## Related Flexmonster docs
+初期ロードで表示される集計単位を定義
 
-- [Integration with Next.js](https://www.flexmonster.com/doc/integration-with-next-js/?r=gh_react) — learn how to integrate Flexmonster into a Next.js project.
-- [Usage examples in Next.js](https://www.flexmonster.com/doc/usage-examples-next-js/?r=gh_react) — see details on Flexmonster usage.
+```javascript
+const reportTestSlice: Slice = {
+  rows: [
+    {
+      uniqueName: "watch_start_time",
+      sort: "asc",
+    },
+    {
+      uniqueName: "gender",
+      sort: "asc",
+    },
+    {
+      uniqueName: "age",
+      sort: "asc",
+      filter: {
+        query: {
+          not_equal: -1,
+        },
+      },
+    },
+  ],
+  columns: [
+    {
+      uniqueName: "[Measures]",
+    },
+  ],
+  measures: [
+    {
+      uniqueName: "stay_time",
+    },
+    {
+      uniqueName: "max_watch_duration",
+    },
+  ],
+};
+```
+
+# Options
+
+Pivot Table & Charts の表示形式を定義（チャートタイトルやレイアウト関連）
+
+```javascript
+const reportTestOptions: Options = {
+  timePattern: "yyyy-MM-dd hh:mm:ss",
+  chart: {
+    type: "column_line",
+    title: "Chart for SampleData",
+  },
+  grid: {
+    type: "flat",
+    grandTotalsPosition: "top",
+  },
+};
+```
+
+# Format
+
+Pivot Table & Charts の表示形式を定義（数値の％表示やゼロサプレスなど）
+
+```javascript
+const reportTestFormat: Format = {
+  thousandsSeparator: ",",
+  decimalSeparator: ".",
+  decimalPlaces: 0,
+  textAlign: "right",
+  isPercent: false,
+};
+```

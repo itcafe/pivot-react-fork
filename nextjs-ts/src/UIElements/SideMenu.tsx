@@ -10,6 +10,9 @@ export default function SideMenu() {
                 <li className="tab-button">
                     <Link url="/pivot-table-demo" caption="PIVOT TABLE DEMO"/>
                 </li>
+                <li className="tab-button">
+                    <Link url="/pivot-table-demo-test" caption="Chart for Sample log"/>
+                </li>
             </ol>
             <div className="sub-title">API and Events</div>
             <ol>
